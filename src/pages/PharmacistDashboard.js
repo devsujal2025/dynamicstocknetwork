@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Table, Modal, Input, notification } from "antd";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://dynamicstock-backend.onrender.com/api";
+
 
 const PharmacistDashboard = () => {
   const [medicines, setMedicines] = useState([]);
