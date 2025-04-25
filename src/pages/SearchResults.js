@@ -19,7 +19,8 @@ function SearchResults() {
       try {
         setError(null); // reset previous error
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/search?q=${query}`);
+        const response = await axios.get(`https://dynamicstock-backend.onrender.com/api/search?q=${query}`);
+
         setMedicines(response.data || []);
       } catch (err) {
         console.error("Error fetching medicines:", err);
