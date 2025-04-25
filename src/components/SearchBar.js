@@ -1,7 +1,9 @@
-// src/components/SearchBar.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+
+// Use the base API URL from an environment variable
+const API_URL = process.env.REACT_APP_API_URL || "https://dynamicstock-backend.onrender.com/api";
 
 function SearchBar() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +18,8 @@ function SearchBar() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/search?q=${searchQuery}`);
+        // Use the updated URL from the environment variable
+        const response = await axios.get(`${API_URL}/search?q=${searchQuery}`);
         setSuggestions(response.data);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
