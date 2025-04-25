@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 
-const API_URL = "http://localhost:5000/api/auth"; // Update with your backend URL
+const API_URL = "https://dynamicstock-backend.onrender.com/api/auth";
+ // Update with your backend URL
 
 export const loginUser = async (email, password) => {
     try {
