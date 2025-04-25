@@ -16,8 +16,9 @@ function Home() {
         return;
       }
       try {
-       const response = await axios.get(`https://dynamicstock-backend.onrender.com/api/search?q=${searchQuery}`);
-
+        const response = await axios.get(
+          `https://dynamicstock-backend.onrender.com/api/search?q=${searchQuery}`
+        );
         setSuggestions(response.data);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
@@ -59,6 +60,7 @@ function Home() {
 
   return (
     <div>
+      {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div className="container">
           <Link className="navbar-brand fw-bold" to="/">MediStock</Link>
@@ -74,17 +76,33 @@ function Home() {
         </div>
       </nav>
 
+      {/* Hero Section with Search */}
       <header className="bg-light text-center py-5 border-bottom">
         <div className="container">
           <h1 className="display-5 fw-semibold">Manage Medicines with Confidence</h1>
           <p className="lead">Fast, Easy, and Reliable Inventory & Medicine Ordering</p>
-          <div className="position-relative mx-auto" style={{ maxWidth: "600px" }}>
-            <input type="text" className="form-control" placeholder="Search for medicines..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={handleKeyDown} />
+          <div className="position-relative mx-auto px-2" style={{ maxWidth: "600px" }}>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search for medicines..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
             <button className="btn btn-primary mt-2 w-100" onClick={handleSearch}>Search</button>
+
             {suggestions.length > 0 && (
               <ul className="list-group position-absolute w-100 mt-1 shadow" style={{ zIndex: 10 }}>
                 {suggestions.map((medicine, index) => (
-                  <li key={index} className="list-group-item list-group-item-action" onClick={() => handleSelect(medicine.name)} style={{ cursor: "pointer" }}>{medicine.name}</li>
+                  <li
+                    key={index}
+                    className="list-group-item list-group-item-action"
+                    onClick={() => handleSelect(medicine.name)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {medicine.name}
+                  </li>
                 ))}
               </ul>
             )}
@@ -92,17 +110,25 @@ function Home() {
         </div>
       </header>
 
+      {/* Featured Medicines */}
       <section className="container py-5">
         <h2 className="text-center mb-4 fw-bold">Featured Medicines</h2>
         <div className="row">
           {featuredMedicines.map((medicine) => (
-            <div key={medicine._id} className="col-md-4 mb-4">
+            <div key={medicine._id} className="col-12 col-md-4 mb-4">
               <div className="card h-100 shadow-sm">
-                <img src={medicine.image || "https://via.placeholder.com/300x200"} className="card-img-top" alt={medicine.name} style={{ objectFit: "cover", height: "200px" }} />
+                <img
+                  src={medicine.image || "https://via.placeholder.com/300x200"}
+                  className="card-img-top"
+                  alt={medicine.name}
+                  style={{ objectFit: "cover", height: "200px", width: "100%" }}
+                />
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">{medicine.name}</h5>
                   <p className="card-text">Price: ${medicine.price}</p>
-                  <Link to={`/medicine/${medicine._id}`} className="btn btn-outline-primary mt-auto">View Details</Link>
+                  <Link to={`/medicine/${medicine._id}`} className="btn btn-outline-primary mt-auto">
+                    View Details
+                  </Link>
                 </div>
               </div>
             </div>
@@ -110,6 +136,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Offer Section */}
       <section className="bg-primary text-white text-center py-5">
         <div className="container">
           <h2 className="mb-3">Exclusive Offers Just for You!</h2>
