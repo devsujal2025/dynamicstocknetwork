@@ -6,8 +6,12 @@ import axios from "axios";
 function Cart() {
     const { cartItems, removeFromCart, updateQuantity } = useCart();
     const navigate = useNavigate();
-    const [showPaymentOptions, setShowPaymentOptions] = useState(false); // ✅ NEW STATE
-    const [selectedPayment, setSelectedPayment] = useState(""); // ✅ SELECTED METHOD
+    const [showPaymentOptions, setShowPaymentOptions] = useState(false); // NEW STATE for payment options
+    const [selectedPayment, setSelectedPayment] = useState(""); // SELECTED PAYMENT METHOD
+    const [loading, setLoading] = useState(false); // LOADING STATE for button disable
+    const [error, setError] = useState(""); // ERROR STATE
+
+    const API_URL = process.env.REACT_APP_API_URL || "https://dynamicstock-backend.onrender.com/api";
 
     const getTotal = () => {
         return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -24,6 +28,7 @@ function Cart() {
     };
 
     const handlePlaceOrder = async () => {
+        setLoading(true); // Enable loading state
         const userId = localStorage.getItem("userId");
         const items = cartItems.map(item => ({
             product: item._id,
@@ -33,17 +38,46 @@ function Cart() {
         const totalAmount = getTotal();
 
         try {
-            const response = await axios.post('/api/orders/place-order', { userId, items, totalAmount });
+            const response = await axios.post(`${API_URL}/orders/place-order`, { userId, items, totalAmount });
 
             if (response.data.success) {
-                // ✅ Show payment options instead of navigating immediately
+                // Show payment options after placing the order
                 setShowPaymentOptions(true);
             } else {
-                alert("Order placement failed, please try again.");
+                setError("Order placement failed, please try again.");
             }
         } catch (error) {
             console.error("Error placing order:", error);
-            alert("There was an error placing your order. Please try again.");
+            setError("There was an error placing your order. Please try again.");
+        }
+        setLoading(false); // Disable loading state
+    };
+
+    const handlePayment = async () => {
+        if (!selectedPayment) {
+            alert("Please select a payment method.");
+            return;
+        }
+
+        const paymentDetails = {
+            method: selectedPayment,
+            orderId: "12345", // Assume order ID is generated on the backend after placing the order
+            amount: getTotal(),
+        };
+
+        try {
+            // Send payment details to backend (adjust as per your actual backend endpoint)
+            const paymentResponse = await axios.post(`${API_URL}/payment/confirm`, paymentDetails);
+
+            if (paymentResponse.data.success) {
+                alert("Payment successful! Your order is being processed.");
+                navigate("/order-confirmation"); // Redirect to order confirmation page
+            } else {
+                alert("Payment failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Payment Error:", error);
+            alert("There was an error processing the payment. Please try again.");
         }
     };
 
@@ -89,9 +123,11 @@ function Cart() {
 
                     <div className="card p-4 mt-4">
                         <h4>Total: ₹{getTotal()}</h4>
-                        <button className="btn btn-success mt-2" onClick={handlePlaceOrder}>Place Order</button>
+                        <button className="btn btn-success mt-2" onClick={handlePlaceOrder} disabled={loading}>
+                            {loading ? "Placing Order..." : "Place Order"}
+                        </button>
 
-                        {/* ✅ Payment Options Section */}
+                        {/* Payment Options Section */}
                         {showPaymentOptions && (
                             <div className="mt-4">
                                 <h5>Select Payment Method:</h5>
@@ -120,7 +156,7 @@ function Cart() {
                                     </label>
                                 </div>
 
-                                <button className="btn btn-primary mt-3" disabled={!selectedPayment}>
+                                <button className="btn btn-primary mt-3" disabled={!selectedPayment} onClick={handlePayment}>
                                     Confirm Payment
                                 </button>
                             </div>
@@ -128,6 +164,9 @@ function Cart() {
                     </div>
                 </>
             )}
+
+            {/* Display error if any */}
+            {error && <p className="alert alert-danger">{error}</p>}
         </div>
     );
 }
