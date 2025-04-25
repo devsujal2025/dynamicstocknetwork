@@ -20,7 +20,7 @@ function CustomerDashboard() {
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/search?q=${searchQuery}`);
+        const response = await axios.get(`https://dynamicstock-backend.onrender.com/api/search?q=${searchQuery}`);
         setSuggestions(response.data);
       } catch (error) {
         console.error("Error fetching suggestions:", error);
