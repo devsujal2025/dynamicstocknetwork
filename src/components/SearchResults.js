@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import axios from "axios";
 
+// Use the base API URL from an environment variable
+const API_URL = process.env.REACT_APP_API_URL || "https://dynamicstock-backend.onrender.com/api";
+
 function SearchResults() {
   const [medicines, setMedicines] = useState([]);
   const [error, setError] = useState("");
@@ -17,7 +20,8 @@ function SearchResults() {
       if (!query) return;
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/search?q=${query}`);
+        // Use the updated API URL
+        const response = await axios.get(`${API_URL}/search?q=${query}`);
         setMedicines(response.data);
       } catch (error) {
         console.error("Error fetching search results:", error);
